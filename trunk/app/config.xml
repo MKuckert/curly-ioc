@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+	<context name="app">
+		<object id="db" factory-class="Zend_Db" factory-method="factory" allocation-policy="single">
+			<ctr>
+				<param>Pdo_Mysql</param>
+				<param>
+					<array>
+						<entry key="host" value="localhost" />
+						<entry key="username" value="root" />
+						<entry key="password" value="" />
+						<entry key="dbname" value="test" />
+					</array>
+				</param>
+			</ctr>
+			<property name="fetchMode" type="constant">Zend_Db::FETCH_ASSOC</property>
+		</object>
+		<object id="cache" factory-class="Zend_Cache" factory-method="factory" allocation-policy="single">
+			<ctr>
+				<param>Core</param>
+				<param>File</param>
+				<param>
+					<array>
+						<entry key="caching"><value type="boolean">true</value></entry>
+					</array>
+				</param>
+				<param>
+					<array>
+						<entry key="cache_dir">D:\dev\Curly\IoC\app\cache</entry>
+					</array>
+				</param>
+			</ctr>
+		</object>
+		<object id="view" class="Zend_View">
+			<property name="basepath">D:\dev\Curly\IoC\app\view</property>
+			<property name="useStreamWrapper" type="boolean">true</property>
+		</object>
+	</context>
+</configuration>

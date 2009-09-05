@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+	<context name="ctx">
+		<object id="obj" class="TestObj1">
+			<ctr>
+				<param>ctrParam</param>
+				<param value="ctrParam2" />
+				<param value="123" type="integer" />
+				<param>
+					<array>
+						<entry>
+							<key type="constant">PDO::MYSQL_ATTR_INIT_COMMAND</key>
+							<value>SET NAMES utf8</value>
+						</entry>
+						<entry key="x">y</entry>
+						<entry key="array">
+							<value>
+								<array>
+									<entry key="foo"><value type="double">0.123</value></entry>
+								</array>
+							</value>
+						</entry>
+					</array>
+				</param>
+			</ctr>
+			<property name="prop1" type="integer">
+				1235
+			</property>
+			<property name="prop2" value="valueOfProp2" />
+			<property name="prop3">
+				<array>
+					<entry>
+						<key type="constant">PDO::MYSQL_ATTR_INIT_COMMAND</key>
+						<value>SET NAMES utf8</value>
+					</entry>
+				</array>
+			</property>
+		</object>
+	</context>
+</configuration>
