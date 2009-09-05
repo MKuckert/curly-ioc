@@ -1,0 +1,3 @@
+ - inline objects
+ - method calls
+ - inter context references
