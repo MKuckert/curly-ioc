@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__FILE__).'/init.php';
+require_once 'tests/Parser/FactoryTest.php';
 require_once 'tests/Parser/XmlParserTest.php';
 require_once 'tests/ContainerTest.php';
 
@@ -14,8 +15,8 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 	public function __construct() {
 		$this->setName ( 'AllTests' );
 		
+		$this->addTestSuite ( 'CI_Parser_FactoryTest' );
 		$this->addTestSuite ( 'CI_Parser_XmlParserTest' );
-		
 		$this->addTestSuite ( 'CI_ContainerTest' );
 	
 	}
