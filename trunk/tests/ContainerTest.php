@@ -31,6 +31,21 @@ class CI_ContainerTest extends PHPUnit_Framework_TestCase {
 		));
 	}
 	
+	public function testAllocatorFactory() {
+		$container=new CI_Container();
+		$container->parseFile(dirname(__FILE__).'/test/xmlparse.xml');
+		$ctx=$container->getContext('ctx');
+		
+		$alloc=CI_Allocator_Factory::fabricate(CI_Container::ALLOC_CLONE, $ctx);
+		$this->assertType('CI_Allocator_Clone', $alloc);
+		
+		$alloc=CI_Allocator_Factory::fabricate(CI_Container::ALLOC_SINGLE, $ctx);
+		$this->assertType('CI_Allocator_Single', $alloc);
+		
+		$alloc=CI_Allocator_Factory::fabricate('ThisAllocatorWillNeverExist', $ctx);
+		$this->assertNull($alloc);
+	}
+	
 	public function testDontHasContext() {
 		$container=new CI_Container();
 		$this->assertNull($container->getContext('ctx'));
