@@ -114,12 +114,12 @@ class CI_Context {
 			$this->circleRef[]=$id;
 			$instance=$this->_allocator[$alloc]->allocate($id);
 			array_pop($this->circleRef);
-			return $instance;
 		}
 		catch(CI_Exception $ex) {
 			array_pop($this->circleRef);
 			throw $ex;
 		}
+		return $instance;
 	}
 	
 }
