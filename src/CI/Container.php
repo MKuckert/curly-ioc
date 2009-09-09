@@ -3,6 +3,23 @@
 /**
  * CI_Container
  * 
+ * The concrete container for the inversion of control. Parsing and context
+ * retrieval is made with an instance of this class.
+ * 
+ * The {@link parseString} and {@link parseFile} methods take an options array.
+ * Possible options are the following:
+ *  - typeHint (string):	Gives the parser factory a hint, what type of input
+ * 							the given parameter consists of. This can improve
+ * 							performance, because the type doesn´t have to be
+ * 							determined.
+ *  - cachePath (string):	Directory path where the container can cache parsed
+ * 							context configurations.
+ *  - disableCache (bool):  This flag is only useful in conjunction with the
+ * 							cachePath option. You can disable caching even if
+ * 							the path is set. Is just useful for debugging to
+ * 							easily disable caching without the need to remove
+ * 							the cachePath.
+ * 
  * @author Martin Kuckert
  * @copyright Copyright (c) 2009 Martin Kuckert
  * @license New BSD License
@@ -19,9 +36,14 @@ class CI_Container {
 	const CTR_FACTORY='factory';
 	
 	/**
-	 * @var array
+	 * @var array List of all parsed contexts.
 	 */
 	private $_ctxs=array();
+	
+	/**
+	 * @var CI_Parser_Factory
+	 */
+	private $_parserFactory=NULL;
 	
 	/**
 	 * @return CI_Context or NULL
@@ -37,15 +59,35 @@ class CI_Container {
 	}
 	
 	/**
+	 * @return CI_Parser_Factory
+	 */
+	public function getParserFactory() {
+		if($this->_parserFactory===NULL) {
+			$this->_parserFactory=new CI_Parser_Factory();
+		}
+		return $this->_parserFactory;
+	}
+	
+	/**
+	 * @return CI_Container
+	 * @param CI_Parser_Factory
+	 */
+	public function setParserFactory(CI_Parser_Factory $factory) {
+		$this->_parserFactory=$factory;
+		return $this;
+	}
+	
+	/**
 	 * Parse given string.
 	 * 
 	 * @throws CI_Parser_Exception
 	 * @return CI_Container
 	 * @param string
+	 * @param array Additional options
 	 */
-	public function parseString($string) {
-		// TODO: Determine Filetype with factory.
-		$parser=new CI_Parser_Xml($this);
+	public function parseString($string, array $options=array()) {
+		$parser=$this->getParserFactory()
+			->fabricateStringParser($this, $string, $options);
 		$this->initCtx($parser->parseString($string));
 		return $this;
 	}
@@ -56,10 +98,11 @@ class CI_Container {
 	 * @throws CI_Parser_Exception
 	 * @return CI_Container
 	 * @param string
+	 * @param array Additional options
 	 */
-	public function parseFile($file) {
-		// TODO: Determine Filetype with factory.
-		$parser=new CI_Parser_Xml($this);
+	public function parseFile($file, array $options=array()) {
+		$parser=$this->getParserFactory()
+			->fabricateFileParser($this, $file, $options);
 		$this->initCtx($parser->parseFile($file));
 		return $this;
 	}
