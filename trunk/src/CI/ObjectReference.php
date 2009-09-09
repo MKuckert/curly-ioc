@@ -32,11 +32,4 @@ class CI_ObjectReference {
 		return $this->_refName;
 	}
 	
-	/**
-	 * @return string
-	 */
-	public function __toString() {
-		return $this->_refName;
-	}
-	
 }
