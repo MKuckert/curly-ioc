@@ -11,6 +11,6 @@
  */
 class CI_Version {
 	
-	const VERSION='0.2alpha';
+	const VERSION='0.3alpha';
 	
 }

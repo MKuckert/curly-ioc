@@ -839,12 +839,7 @@ XML;
 			</object>'
 		);
 		
-		try {
-			$parser->parseString($str);
-		}
-		catch(CI_Parser_Exception $ex) {
-			$this->assertContains('Every property node requires a name attribute', $ex->getMessage());
-		}
+		$parser->parseString($str);
 	}
 	
 }
