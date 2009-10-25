@@ -205,4 +205,40 @@ XML;
 		$this->assertNotNull(TestObj4::$createdInstance);
 	}
 	
+	public function testCache() {
+		$cachePath=dirname(__FILE__).DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR;
+		foreach(glob($cachePath.'*') as $f) {
+			unlink($f);
+		}
+		
+		$xml=<<<XML
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+	<context name="ctx">
+		<object id="obj" class="TestObj3">
+			<property name="foo">bar</property>
+		</object>
+	</context>
+</configuration>
+XML;
+		
+		$container=new CI_Container();
+		$ctx=$container
+			->parseString($xml, array(
+				'cachePath'		=> $cachePath
+			))
+			->getContext('ctx');
+		
+		$this->assertTrue($ctx->hasObject('obj'));
+		$this->assertTrue(is_file($cachePath.md5($xml)));
+		
+		$container=new CI_Container();
+		$ctx=$container
+			->parseString($xml, array(
+				'cachePath'		=> $cachePath
+			))
+			->getContext('ctx');
+		$this->assertTrue($ctx->hasObject('obj'));
+	}
+	
 }

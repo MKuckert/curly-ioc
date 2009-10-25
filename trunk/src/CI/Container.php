@@ -78,6 +78,56 @@ class CI_Container {
 	}
 	
 	/**
+	 * Trys to load an entry from cache
+	 * 
+	 * @return boolean true if successfully loaded
+	 * @param string Parsestring or -file
+	 * @param array Additional options
+	 */
+	protected function tryLoadFromCache($stringOrFile, array $options) {
+		if(!isset($options['cachePath']) or isset($options['disableCache'])) {
+			return false;
+		}
+		
+		$cacheKey=md5($stringOrFile);
+		$file=$options['cachePath'].DIRECTORY_SEPARATOR.$cacheKey;
+		if(!is_file($file)) {
+			return false;
+		}
+		else if(is_file($stringOrFile) and filemtime($stringOrFile)>$file) {
+			return false;
+		}
+		
+		$entry=unserialize(
+			file_get_contents($options['cachePath'].DIRECTORY_SEPARATOR.$cacheKey)
+		);
+		
+		if(!is_array($entry)) {
+			return false;
+		}
+		
+		$this->initCtx($entry);
+		return true;
+	}
+	
+	/**
+	 * Trys to store an entry to cache
+	 * 
+	 * @return void
+	 * @param string Parsestring or -file
+	 * @param array Additional options
+	 * @param array Parsed context data
+	 */
+	protected function storeToCache($stringOrFile, array $options, array $entry) {
+		if(!isset($options['cachePath']) or isset($options['disableCache'])) {
+			return;
+		}
+		
+		$cacheKey=md5($stringOrFile);
+		file_put_contents($options['cachePath'].DIRECTORY_SEPARATOR.$cacheKey, serialize($entry));
+	}
+	
+	/**
 	 * Parse given string.
 	 * 
 	 * @throws CI_Parser_Exception
@@ -86,9 +136,17 @@ class CI_Container {
 	 * @param array Additional options
 	 */
 	public function parseString($string, array $options=array()) {
+		if($this->tryLoadFromCache($string, $options)) {
+			return $this;
+		}
+		
 		$parser=$this->getParserFactory()
 			->fabricateStringParser($this, $string, $options);
-		$this->initCtx($parser->parseString($string));
+		$entry=$parser->parseString($string);
+		
+		$this->storeToCache($string, $options, $entry);
+		
+		$this->initCtx($entry);
 		return $this;
 	}
 	
@@ -101,9 +159,17 @@ class CI_Container {
 	 * @param array Additional options
 	 */
 	public function parseFile($file, array $options=array()) {
+		if($this->tryLoadFromCache($file, $options)) {
+			return $this;
+		}
+		
 		$parser=$this->getParserFactory()
 			->fabricateFileParser($this, $file, $options);
-		$this->initCtx($parser->parseFile($file));
+		$entry=$parser->parseFile($file);
+		
+		$this->storeToCache($file, $options, $entry);
+		
+		$this->initCtx($entry);
 		return $this;
 	}
 	

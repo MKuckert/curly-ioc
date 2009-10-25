@@ -1,4 +1,4 @@
- - cache of parsed contexts
  - inline objects
  - method calls
  - inter context references
+ - default context
