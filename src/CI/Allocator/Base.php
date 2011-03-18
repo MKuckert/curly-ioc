@@ -9,7 +9,7 @@
  * @package CI.Allocator
  * @since 30.08.2009
  */
-abstract class CI_Allocator_Base implements CI_Allocator_Interface {
+class CI_Allocator_Base implements CI_Allocator_Interface {
 	
 	/**
 	 * @var CI_Context
@@ -75,7 +75,7 @@ abstract class CI_Allocator_Base implements CI_Allocator_Interface {
 	 * @param string Classname
 	 * @param array Creation arguments
 	 */
-	protected function createInstance($class, array $args) {
+	public function createInstance($class, array $args) {
 		// The ReflectionClass is not quite fast, so we'll use a simple
 		// constructor call for most of the time
 		switch(count($args)) {
